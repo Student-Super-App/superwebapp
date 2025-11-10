@@ -1,0 +1,1033 @@
+{
+	"info": {
+		"_postman_id": "3ceca2b6-0745-4234-beae-1c1716916ad5",
+		"name": "Student Marketplace API",
+		"description": "Complete API collection for Student Marketplace Service with products and real-time chat functionality. Images are handled via URLs from AWS/Cloudinary.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32763346",
+		"_collection_link": "https://ekalsutra-2739.postman.co/workspace/Student_Super_App~53d6a75e-7dea-4167-b695-1cc217173d41/collection/32763346-3ceca2b6-0745-4234-beae-1c1716916ad5?action=share&source=collection_link&creator=32763346"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response) {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    if (responseJson.data && responseJson.data.accessToken) {\r",
+									"        pm.globals.set(\"accessToken\", responseJson.data.accessToken);\r",
+									"        pm.globals.set(\"userId\", responseJson.data.user._id);\r",
+									"    }\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"mrrobo933@gmail.com\",\n  \"password\": \"SecurePass123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{authUrl}}/api/auth/login",
+							"host": [
+								"{{authUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Login with email and password"
+					},
+					"response": []
+				}
+			],
+			"description": "Health check endpoint"
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "Get All Products",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{marketplace_url}}/api/products",
+							"host": [
+								"{{marketplace_url}}"
+							],
+							"path": [
+								"api",
+								"products"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number (default: 1)",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Items per page (max: 50)",
+									"disabled": true
+								},
+								{
+									"key": "category",
+									"value": "Electronics",
+									"description": "Filter by category",
+									"disabled": true
+								},
+								{
+									"key": "condition",
+									"value": "Like New",
+									"description": "Filter by condition",
+									"disabled": true
+								},
+								{
+									"key": "minPrice",
+									"value": "0",
+									"description": "Minimum price filter",
+									"disabled": true
+								},
+								{
+									"key": "maxPrice",
+									"value": "1000",
+									"description": "Maximum price filter",
+									"disabled": true
+								},
+								{
+									"key": "search",
+									"value": "laptop",
+									"description": "Text search in title/description",
+									"disabled": true
+								},
+								{
+									"key": "sortBy",
+									"value": "price",
+									"description": "Sort field (price, createdAt, views)",
+									"disabled": true
+								},
+								{
+									"key": "sortOrder",
+									"value": "asc",
+									"description": "Sort order (asc/desc)",
+									"disabled": true
+								},
+								{
+									"key": null,
+									"value": "",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Retrieve all products with filtering and pagination"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Product by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{marketplace_url}}/api/products/{{product_id}}",
+							"host": [
+								"{{marketplace_url}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"{{product_id}}"
+							]
+						},
+						"description": "Get specific product details by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"MacBooksss Air M2 - 13 inch\",\n    \"description\": \"Excellent condition MacBook Air with M2 chip. Barely used, includes original charger and box. Perfect for students!\",\n    \"price\": 899.99,\n    \"category\": \"Electronics\",\n    \"condition\": \"Like New\",\n    \"images\": [\n        \"https://techcrunch.com/wp-content/uploads/2021/10/CMC_0556.jpg\",\n        \"https://techcrunch.com/wp-content/uploads/2021/10/CMC_0556.jpg\",\n        \"https://techcrunch.com/wp-content/uploads/2021/10/CMC_0556.jpg\"\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{marketplace_url}}/api/products",
+							"host": [
+								"{{marketplace_url}}"
+							],
+							"path": [
+								"api",
+								"products"
+							]
+						},
+						"description": "Create a new product listing with image URLs from AWS/Cloudinary"
+					},
+					"response": []
+				},
+				{
+					"name": "Search Product",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"MacBooksss Air M2 - 13 inch\",\n    \"description\": \"Excellent condition MacBook Air with M2 chip. Barely used, includes original charger and box. Perfect for students!\",\n    \"price\": 899.99,\n    \"category\": \"Electronics\",\n    \"condition\": \"Like New\",\n    \"images\": [\n        \"https://techcrunch.com/wp-content/uploads/2021/10/CMC_0556.jpg\",\n        \"https://techcrunch.com/wp-content/uploads/2021/10/CMC_0556.jpg\",\n        \"https://techcrunch.com/wp-content/uploads/2021/10/CMC_0556.jpg\"\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{marketplace_url}}/api/products/search?q= MacBoo&category= Electronics&minPrice=0&sortBy= createdAt&sortOrder= desc&page= 1&limit= 20",
+							"host": [
+								"{{marketplace_url}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"search"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": " MacBoo"
+								},
+								{
+									"key": "category",
+									"value": " Electronics"
+								},
+								{
+									"key": "condition",
+									"value": " Good",
+									"disabled": true
+								},
+								{
+									"key": "minPrice",
+									"value": "0"
+								},
+								{
+									"key": "maxPrice",
+									"value": " 150",
+									"disabled": true
+								},
+								{
+									"key": "location",
+									"value": " Delhi",
+									"disabled": true
+								},
+								{
+									"key": "sortBy",
+									"value": " createdAt"
+								},
+								{
+									"key": "sortOrder",
+									"value": " desc"
+								},
+								{
+									"key": "page",
+									"value": " 1"
+								},
+								{
+									"key": "limit",
+									"value": " 20"
+								}
+							]
+						},
+						"description": "Create a new product listing with image URLs from AWS/Cloudinary"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    // \"title\": \"MacBook Air M2 - 13 inch (Updated)\",\n    // \"description\": \"Updated description: Excellent condition MacBook Air with M2 chip. Price reduced!\",\n    \"price\": 500.99\n    // \"condition\": \"Good\",\n    // \"images\": [\n    //     \"https://example.com/images/macbook-updated-1.jpg\",\n    //     \"https://example.com/images/macbook-updated-2.jpg\"\n    // ]\n}"
+						},
+						"url": {
+							"raw": "{{marketplace_url}}/api/products/{{product_id}}",
+							"host": [
+								"{{marketplace_url}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"{{product_id}}"
+							]
+						},
+						"description": "Update existing product details with new image URLs"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{marketplace_url}}/api/products/{{product_id}}",
+							"host": [
+								"{{marketplace_url}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"{{product_id}}"
+							]
+						},
+						"description": "Delete a product listing"
+					},
+					"response": []
+				},
+				{
+					"name": "Get My Products",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{marketplace_url}}/api/products/user/my-products",
+							"host": [
+								"{{marketplace_url}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"user",
+								"my-products"
+							]
+						},
+						"description": "Get products listed by the authenticated user"
+					},
+					"response": []
+				},
+				{
+					"name": "Increment Product Views",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{marketplace_url}}/api/products/{{product_id}}/view",
+							"host": [
+								"{{marketplace_url}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"{{product_id}}",
+								"view"
+							]
+						},
+						"description": "Increment view count for a product"
+					},
+					"response": []
+				}
+			],
+			"description": "Product management endpoints"
+		},
+		{
+			"name": "Product Analytics",
+			"item": [
+				{
+					"name": "Get Product Statistics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{marketplace_url}}/api/products/analytics/stats",
+							"host": [
+								"{{marketplace_url}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"analytics",
+								"stats"
+							]
+						},
+						"description": "Get overall product statistics"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Trending Products",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{marketplace_url}}/api/products/analytics/trending?limit=10&category=Electronics",
+							"host": [
+								"{{marketplace_url}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"analytics",
+								"trending"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Number of trending products"
+								},
+								{
+									"key": "category",
+									"value": "Electronics",
+									"description": "Filter by category"
+								}
+							]
+						},
+						"description": "Get trending products based on views and activity"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Category Statistics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{marketplace_url}}/api/products/analytics/categories",
+							"host": [
+								"{{marketplace_url}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"analytics",
+								"categories"
+							]
+						},
+						"description": "Get statistics for each product category"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Similar Products",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{marketplace_url}}/api/products/{{product_id}}/similar?limit=5",
+							"host": [
+								"{{marketplace_url}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"{{product_id}}",
+								"similar"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5",
+									"description": "Number of similar products"
+								}
+							]
+						},
+						"description": "Get products similar to the specified product"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Search Suggestions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{marketplace_url}}/api/products/search/suggestions?query=mac&limit=10",
+							"host": [
+								"{{marketplace_url}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"search",
+								"suggestions"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "mac",
+									"description": "Search query for suggestions"
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Number of suggestions"
+								}
+							]
+						},
+						"description": "Get search suggestions based on query"
+					},
+					"response": []
+				}
+			],
+			"description": "Product analytics and insights endpoints"
+		},
+		{
+			"name": "Chat Management",
+			"item": [
+				{
+					"name": "Create or Get Chat",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{marketplace_url}}/api/chat/{{product_id}}",
+							"host": [
+								"{{marketplace_url}}"
+							],
+							"path": [
+								"api",
+								"chat",
+								"{{product_id}}"
+							]
+						},
+						"description": "Create a new chat or get existing chat for a product"
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Chats",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{marketplace_url}}/api/chat?page=1&limit=20&status=active",
+							"host": [
+								"{{marketplace_url}}"
+							],
+							"path": [
+								"api",
+								"chat"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number"
+								},
+								{
+									"key": "limit",
+									"value": "20",
+									"description": "Chats per page"
+								},
+								{
+									"key": "status",
+									"value": "active",
+									"description": "Chat status filter"
+								}
+							]
+						},
+						"description": "Get all chats for the authenticated user with filters"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Chat Statistics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{marketplace_url}}/api/chat/stats",
+							"host": [
+								"{{marketplace_url}}"
+							],
+							"path": [
+								"api",
+								"chat",
+								"stats"
+							]
+						},
+						"description": "Get chat statistics for the authenticated user"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Chat by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{marketplace_url}}/api/chat/{{chat_id}}",
+							"host": [
+								"{{marketplace_url}}"
+							],
+							"path": [
+								"api",
+								"chat",
+								"{{chat_id}}"
+							]
+						},
+						"description": "Get specific chat details"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Chat Messages",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{marketplace_url}}/api/chat/{{chat_id}}/messages?page=1&limit=50",
+							"host": [
+								"{{marketplace_url}}"
+							],
+							"path": [
+								"api",
+								"chat",
+								"{{chat_id}}",
+								"messages"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number"
+								},
+								{
+									"key": "limit",
+									"value": "50",
+									"description": "Messages per page"
+								}
+							]
+						},
+						"description": "Get chat messages with pagination"
+					},
+					"response": []
+				},
+				{
+					"name": "Send Text Message",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"message\": \"Hello! Is this MacBook still available?\",\n    \"messageType\": \"text\"\n}"
+						},
+						"url": {
+							"raw": "{{marketplace_url}}/api/chat/{{chat_id}}/messages",
+							"host": [
+								"{{marketplace_url}}"
+							],
+							"path": [
+								"api",
+								"chat",
+								"{{chat_id}}",
+								"messages"
+							]
+						},
+						"description": "Send a text message in a chat"
+					},
+					"response": []
+				},
+				{
+					"name": "Send Image Message",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"message\": \"Here's a photo of the product condition\",\n    \"messageType\": \"image\",\n    \"imageUrl\": \"https://example.com/chat-images/product-condition.jpg\"\n}"
+						},
+						"url": {
+							"raw": "{{marketplace_url}}/api/chat/{{chat_id}}/messages",
+							"host": [
+								"{{marketplace_url}}"
+							],
+							"path": [
+								"api",
+								"chat",
+								"{{chat_id}}",
+								"messages"
+							]
+						},
+						"description": "Send an image message with URL from AWS/Cloudinary"
+					},
+					"response": []
+				},
+				{
+					"name": "Mark Messages as Read",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"messageIds\": [\"message_id_1\", \"message_id_2\"]\n}"
+						},
+						"url": {
+							"raw": "{{marketplace_url}}/api/chat/{{chat_id}}/read",
+							"host": [
+								"{{marketplace_url}}"
+							],
+							"path": [
+								"api",
+								"chat",
+								"{{chat_id}}",
+								"read"
+							]
+						},
+						"description": "Mark specific messages as read"
+					},
+					"response": []
+				},
+				{
+					"name": "Archive Chat",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{marketplace_url}}/api/chat/{{chat_id}}",
+							"host": [
+								"{{marketplace_url}}"
+							],
+							"path": [
+								"api",
+								"chat",
+								"{{chat_id}}"
+							]
+						},
+						"description": "Archive a chat conversation"
+					},
+					"response": []
+				}
+			],
+			"description": "Chat and messaging endpoints"
+		},
+		{
+			"name": "Chat Analytics",
+			"item": [],
+			"description": "Chat analytics endpoints (removed - use Chat Statistics instead)"
+		},
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{marketplace_url}}/health",
+					"host": [
+						"{{marketplace_url}}"
+					],
+					"path": [
+						"health"
+					]
+				},
+				"description": "Check service health status including database connection and memory usage"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Add timestamp to requests",
+					"pm.globals.set('timestamp', Date.now());"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Basic response validation",
+					"pm.test('Status code is 200 or 201', function () {",
+					"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+					"});",
+					"",
+					"// Check response time",
+					"pm.test('Response time is less than 2000ms', function () {",
+					"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+					"});",
+					"",
+					"// Check for JSON response",
+					"pm.test('Response is JSON', function () {",
+					"    pm.response.to.have.header('Content-Type');",
+					"    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+					"});",
+					"",
+					"// Auto-save important IDs",
+					"if (pm.response.code === 200 || pm.response.code === 201) {",
+					"    const jsonData = pm.response.json();",
+					"    ",
+					"    // Save product ID from create product response",
+					"    if (jsonData.success && jsonData.data && jsonData.data._id && pm.info.requestName.includes('Create Product')) {",
+					"        pm.globals.set('product_id', jsonData.data._id);",
+					"        console.log('Saved product_id: ' + jsonData.data._id);",
+					"    }",
+					"    ",
+					"    // Save chat ID from create chat response",
+					"    if (jsonData.success && jsonData.data && jsonData.data._id && pm.info.requestName.includes('Create Chat')) {",
+					"        pm.globals.set('chat_id', jsonData.data._id);",
+					"        console.log('Saved chat_id: ' + jsonData.data._id);",
+					"    }",
+					"}"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3002",
+			"type": "string"
+		},
+		{
+			"key": "jwt_token",
+			"value": "your_jwt_token_here",
+			"type": "string"
+		},
+		{
+			"key": "product_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "chat_id",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

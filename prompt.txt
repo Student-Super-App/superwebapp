@@ -1,0 +1,241 @@
+You are an expert Next.js architect AI agent.
+You are setting up a production-grade frontend for the Student Super App, connected to an existing Node.js backend (API schema provided via Postman JSON).
+
+Follow all requirements below carefully, create all folders, files, and integrations end-to-end, and ensure the result runs in production.
+
+🏗️ Base Context
+
+Framework: Next.js 15+ (App Router)
+
+Language: TypeScript
+
+State Management: Redux Toolkit
+
+Server State: @tanstack/react-query
+
+Realtime: socket.io-client
+
+UI: shadcn/ui + Tailwind CSS
+
+Form Validation: react-hook-form + zod
+
+Authentication: JWT access + refresh token, aligned with backend routes (provided in Postman JSON).
+
+All environment variables loaded from .env.developmet, env.production.
+
+📦 Tasks for the AI Agent
+1. Setup Core Integrations
+
+Integrate Redux store, QueryClient, and SocketProvider into src/app/layout.tsx.
+
+Configure axios with:
+
+Base URL from NEXT_PUBLIC_API_BASE_URL
+
+Interceptors that handle token injection and refresh
+
+Automatic retry on 401 (once)
+
+Add reusable toast/error handling using shadcn’s use-toast.
+
+2. Implement Authentication System
+
+Using backend routes from Postman JSON:
+
+POST {{authUrl}}/api/auth/register
+
+{{authUrl}}/api/auth/login
+{{authUrl}}/api/auth/refresh-token
+{{authUrl}}/api/auth/verify-email/:token
+{{authUrl}}/api/auth/request-password-reset
+{{authUrl}}/api/auth/reset-password/:token
+{{authUrl}}/health
+protects route
+{{authUrl}}/api/auth/profile
+{{authUrl}}/api/auth/change-password
+{{authUrl}}/api/auth/logout
+{{authUrl}}/api/auth/logout-all
+Create:
+
+src/store/slices/authSlice.ts — to store user, token, and auth status.
+
+src/features/auth/services.ts — handles axios API calls.
+
+src/app/(auth)/login/page.tsx & register/page.tsx — with forms using react-hook-form + zod.
+
+src/components/AuthGuard.tsx — protects private routes.
+
+Auto-refresh token on page reload.
+
+Logout when refresh fails or token expires.
+
+✅ Result: User can register, login, auto-refresh, and stay logged in persistently.
+
+3. Build Modular Feature Structure
+
+Each of the following modules should have its own folder, Redux slice, query hooks, and pages.
+
+src/
+ ├── app/
+ │    ├── marketplace/
+ │    │    ├── page.tsx
+ │    │    ├── [id]/page.tsx
+ │    │    ├── create/page.tsx
+ │    ├── printing/
+ │    │    ├── page.tsx
+ │    │    ├── order/[id]/page.tsx
+ │    ├── rentplace/
+ │    │    ├── page.tsx
+ │    │    ├── property/[id]/page.tsx
+ │    │    ├── add/page.tsx
+
+
+For each module:
+
+Redux slice: manage UI state (filters, modals, etc.)
+
+React Query hooks: fetch lists, create, update items
+
+API mapping: use axios + endpoints from Postman JSON
+
+UI: use shadcn Cards, Buttons, Inputs, Modals
+
+Socket: listen for updates (e.g., new listing, order status, message)
+
+✅ Example flows:
+
+Marketplace → student lists/sells item
+
+Printing → student uploads file, tracks order in real time
+
+Rentplace → student browses PGs or lists theirs
+
+4. Use Postman JSON to Generate API Clients
+
+Read postman_collection.json from /src/lib/.
+
+Extract all routes, group by folders (auth, marketplace, printing, rentplace).
+
+Generate a typed API client (src/lib/api-client.ts) using axios.
+
+Create src/types/api.d.ts for type-safe request/response interfaces.
+
+✅ Example:
+
+export const MarketplaceApi = {
+  getListings: () => api.get<Listing[]>('/marketplace/listings'),
+  createListing: (data: CreateListingDto) => api.post('/marketplace', data),
+};
+
+5. Add Socket.io Integration
+
+Create /src/lib/socket.ts with io() connection.
+
+Wrap app with <SocketProvider>.
+
+Expose a useSocket() hook for listening/emitting events.
+
+Examples:
+
+Marketplace: live item updates
+
+Printing: live order status
+
+Rentplace: chat between landlord & student
+
+6. Shared Components & Layout
+
+/src/components/common/
+
+Header.tsx (shows logged-in user info + logout)
+
+Sidebar.tsx (navigation to all services)
+
+Loader.tsx, EmptyState.tsx, etc.
+
+/src/components/ui/ from shadcn (Button, Input, Card, Dialog, etc.)
+
+/src/app/layout.tsx → global layout with navbar + theme provider.
+
+7. Error Handling & Toast Notifications
+
+Global toast system for success/error.
+
+Handle 401 globally.
+
+Gracefully show offline/retry UIs via React Query.
+
+8. Deployment & CI
+
+Configure Vercel-ready settings.
+
+Add .env.example.
+
+Add ESLint + Prettier config.
+
+Add GitHub Action to lint, build, and test.
+
+🧱 Expected Deliverables
+
+After this agent runs, your repo should contain:
+
+src/
+ ├── app/
+ │    ├── (auth)/login/
+ │    ├── marketplace/
+ │    ├── printing/
+ │    ├── rentplace/
+ │    ├── dashboard/
+ │    └── layout.tsx
+ ├── components/
+ │    ├── ui/
+ │    ├── common/
+ │    └── AuthGuard.tsx
+ ├── lib/
+ │    ├── axios.ts
+ │    ├── api-client.ts
+ │    ├── queryClient.ts
+ │    └── socket.ts
+ ├── store/
+ │    ├── index.ts
+ │    ├── hooks.ts
+ │    ├── slices/
+ │    │    ├── authSlice.ts
+ │    │    ├── marketplaceSlice.ts
+ │    │    ├── printingSlice.ts
+ │    │    └── rentplaceSlice.ts
+ ├── types/
+ │    ├── api.d.ts
+ │    └── user.ts
+ ├── utils/
+ │    ├── validators.ts
+ │    └── auth.ts
+
+
+✅ Also include:
+
+Working login/register pages
+
+Dummy marketplace/printing/rentplace pages
+
+Auto-refresh auth
+
+Connected socket.io events
+
+Toast feedbacks
+
+API types from Postman JSON
+
+🧠 Agent Notes
+
+Use strict TypeScript types.
+
+Follow Next.js App Router conventions.
+
+Use async React Query + Axios for all server calls.
+
+All private routes use <AuthGuard>.
+
+Keep design minimal, consistent, responsive (shadcn + Tailwind).
+
+All environment variables prefixed with NEXT_PUBLIC_.
