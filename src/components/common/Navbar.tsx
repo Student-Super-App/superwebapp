@@ -14,11 +14,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Menu, X, User, LogOut, Settings, ShoppingBag, Printer, Home as HomeIcon, Moon, Sun } from 'lucide-react';
-import { useState } from 'react';
+import { Menu, X, User, LogOut, Settings, ShoppingBag, Printer, Home as HomeIcon, Moon, Sun, LayoutDashboard, MessageCircle, Plus, Package } from 'lucide-react';
+import { useState, useMemo } from 'react';
 
 export const Header = () => {
   const { user, isAuthenticated } = useAppSelector((state) => state.auth);
+  console.log("user",user,"isAuthenticated",isAuthenticated)
   const logoutMutation = useLogout();
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -28,14 +29,48 @@ export const Header = () => {
     logoutMutation.mutate();
   };
 
-  const navLinks = [
-    { href: '/dashboard', label: 'Dashboard', icon: HomeIcon },
-    { href: '/marketplace', label: 'Marketplace', icon: ShoppingBag },
-    { href: '/printing', label: 'Printing', icon: Printer },
-    { href: '/rentplace', label: 'Rentplace', icon: HomeIcon },
-  ];
+  // Determine current service from pathname
+  const currentService = useMemo(() => {
+    if (pathname.startsWith('/marketplace')) return 'marketplace';
+    if (pathname.startsWith('/printing')) return 'printing';
+    if (pathname.startsWith('/rentplace')) return 'rentplace';
+    return 'dashboard';
+  }, [pathname]);
 
-  const isActive = (path: string) => pathname === path;
+  // Get navigation links based on current service
+  const navLinks = useMemo(() => {
+    const marketplaceNav = [
+      { href: '/marketplace', label: 'Products', icon: ShoppingBag },
+      { href: '/marketplace/my-listings', label: 'My Dashboard', icon: LayoutDashboard },
+      { href: '/marketplace/chats', label: 'Chats', icon: MessageCircle },
+      { href: '/marketplace/create', label: 'Sell', icon: Plus },
+    ];
+
+    const printingNav = [
+      { href: '/printing', label: 'Print Files', icon: Printer },
+      { href: '/printing/orders', label: 'My Orders', icon: Package },
+      { href: '/printing/history', label: 'History', icon: LayoutDashboard },
+    ];
+
+    const rentplaceNav = [
+      { href: '/rentplace', label: 'Properties', icon: HomeIcon },
+      { href: '/rentplace/add', label: 'Add Property', icon: Plus },
+      { href: '/rentplace/my-properties', label: 'My Properties', icon: LayoutDashboard },
+    ];
+
+    switch (currentService) {
+      case 'marketplace':
+        return marketplaceNav;
+      case 'printing':
+        return printingNav;
+      case 'rentplace':
+        return rentplaceNav;
+      default:
+        return [];
+    }
+  }, [currentService]);
+
+  const isActive = (path: string) => pathname === path || pathname.startsWith(path + '/');
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white/95 dark:bg-gray-900/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-gray-900/60 border-gray-200 dark:border-gray-700">
@@ -114,6 +149,33 @@ export const Header = () => {
                           <span>Settings</span>
                         </Link>
                       </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuLabel>Switch Service</DropdownMenuLabel>
+                      <DropdownMenuItem asChild>
+                        <Link href="/dashboard" className="flex items-center cursor-pointer">
+                          <LayoutDashboard className="mr-2 h-4 w-4" />
+                          <span>Dashboard</span>
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href="/marketplace" className="flex items-center cursor-pointer">
+                          <ShoppingBag className="mr-2 h-4 w-4" />
+                          <span>Marketplace</span>
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href="/printing" className="flex items-center cursor-pointer">
+                          <Printer className="mr-2 h-4 w-4" />
+                          <span>Printing</span>
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href="/rentplace" className="flex items-center cursor-pointer">
+                          <HomeIcon className="mr-2 h-4 w-4" />
+                          <span>Rentplace</span>
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
                       <DropdownMenuItem
                         onClick={toggleTheme}
                         className="flex items-center cursor-pointer"
@@ -204,6 +266,46 @@ export const Header = () => {
                 <User className="h-5 w-5" />
                 <span>Profile</span>
               </Link>
+              
+              {/* Service Switcher */}
+              <div className="pt-2 border-t dark:border-gray-700 mt-2">
+                <p className="px-4 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Switch Service
+                </p>
+                <Link
+                  href="/dashboard"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center space-x-3 px-4 py-3 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white rounded-lg"
+                >
+                  <LayoutDashboard className="h-5 w-5" />
+                  <span>Dashboard</span>
+                </Link>
+                <Link
+                  href="/marketplace"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center space-x-3 px-4 py-3 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white rounded-lg"
+                >
+                  <ShoppingBag className="h-5 w-5" />
+                  <span>Marketplace</span>
+                </Link>
+                <Link
+                  href="/printing"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center space-x-3 px-4 py-3 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white rounded-lg"
+                >
+                  <Printer className="h-5 w-5" />
+                  <span>Printing</span>
+                </Link>
+                <Link
+                  href="/rentplace"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center space-x-3 px-4 py-3 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white rounded-lg"
+                >
+                  <HomeIcon className="h-5 w-5" />
+                  <span>Rentplace</span>
+                </Link>
+              </div>
+              
               <button
                 onClick={() => {
                   toggleTheme();

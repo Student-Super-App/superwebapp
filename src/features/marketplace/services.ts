@@ -1,5 +1,3 @@
-import axios from 'axios';
-import Cookies from 'js-cookie';
 import type {
   Product,
   ProductFilters,
@@ -18,64 +16,10 @@ import type {
   PaginatedResponse,
   SingleResponse,
 } from '@/types/marketplace';
+import api from '@/lib/axios';
 
-const MARKETPLACE_BASE_URL = process.env.NEXT_PUBLIC_MARKETPLACE_URL || 'http://localhost:3002';
-
-// Create marketplace-specific axios instance
-const marketplaceApi = axios.create({
-  baseURL: MARKETPLACE_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-// Add auth token to all requests
-marketplaceApi.interceptors.request.use(
-  (config) => {
-    const token = Cookies.get('accessToken');
-    if (token && config.headers) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
-
-// Add response interceptor for error handling
-marketplaceApi.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    // Handle specific error cases
-    if (error.response) {
-      const status = error.response.status;
-      const message = error.response.data?.message || error.message;
-
-      // Log errors in development
-      if (process.env.NODE_ENV === 'development') {
-        console.error('Marketplace API Error:', {
-          status,
-          message,
-          url: error.config?.url,
-        });
-      }
-
-      // Handle unauthorized errors
-      if (status === 401) {
-        // Token might be expired, but don't auto-logout from here
-        // Let the component handle it
-        console.warn('Unauthorized marketplace request');
-      }
-    } else if (error.request) {
-      // Network error
-      console.error('Network error:', error.message);
-    }
-
-    return Promise.reject(error);
-  }
-);
-
+const MARKETPLACE_BASE_URL = process.env.NEXT_PUBLIC_MARKETPLACE_URL;
+console.log('Marketplace Base URL:', MARKETPLACE_BASE_URL);
 // Product APIs
 export const productApi = {
   // Get all products with filters (no auth required)
@@ -91,15 +35,15 @@ export const productApi = {
     if (filters?.sortBy) params.append('sortBy', filters.sortBy);
     if (filters?.sortOrder) params.append('sortOrder', filters.sortOrder);
 
-    const { data } = await marketplaceApi.get(
-      `/api/products?${params.toString()}`
+    const { data } = await api.get(
+      `${MARKETPLACE_BASE_URL}/api/products?${params.toString()}`
     );
     return data;
   },
 
   // Get product by ID (no auth required)
   getById: async (id: string): Promise<SingleResponse<Product>> => {
-    const { data } = await marketplaceApi.get(`/api/products/${id}`);
+    const { data } = await api.get(`${MARKETPLACE_BASE_URL}/api/products/${id}`);
     return data;
   },
 
@@ -117,7 +61,7 @@ export const productApi = {
     if (params.page) searchParams.append('page', params.page.toString());
     if (params.limit) searchParams.append('limit', params.limit.toString());
 
-    const { data } = await marketplaceApi.get(
+    const { data } = await api.get(
       `/api/products/search?${searchParams.toString()}`
     );
     return data;
@@ -125,31 +69,31 @@ export const productApi = {
 
   // Create product (auth required)
   create: async (productData: CreateProductData): Promise<SingleResponse<Product>> => {
-    const { data } = await marketplaceApi.post(`/api/products`, productData);
+    const { data } = await api.post(`${MARKETPLACE_BASE_URL}/api/products`, productData);
     return data;
   },
 
   // Update product (auth required)
   update: async (id: string, productData: UpdateProductData): Promise<SingleResponse<Product>> => {
-    const { data } = await marketplaceApi.put(`/api/products/${id}`, productData);
+    const { data } = await api.put(`${MARKETPLACE_BASE_URL}/api/products/${id}`, productData);
     return data;
   },
 
   // Delete product (auth required)
   delete: async (id: string): Promise<SingleResponse<void>> => {
-    const { data } = await marketplaceApi.delete(`/api/products/${id}`);
+    const { data } = await api.delete(`${MARKETPLACE_BASE_URL}/api/products/${id}`);
     return data;
   },
 
   // Get my products (auth required)
   getMyProducts: async (): Promise<PaginatedResponse<Product>> => {
-    const { data } = await marketplaceApi.get(`/api/products/user/my-products`);
+    const { data } = await api.get(`${MARKETPLACE_BASE_URL}/api/products/user/my-products`);
     return data;
   },
 
   // Increment product views
   incrementViews: async (id: string): Promise<SingleResponse<void>> => {
-    const { data } = await marketplaceApi.post(`/api/products/${id}/view`);
+    const { data } = await api.post(`${MARKETPLACE_BASE_URL}/api/products/${id}/view`);
     return data;
   },
 };
@@ -158,7 +102,7 @@ export const productApi = {
 export const analyticsApi = {
   // Get product statistics
   getStats: async (): Promise<SingleResponse<ProductStats>> => {
-    const { data } = await marketplaceApi.get(`/api/products/analytics/stats`);
+    const { data } = await api.get(`${MARKETPLACE_BASE_URL}/api/products/analytics/stats`);
     return data;
   },
 
@@ -168,15 +112,15 @@ export const analyticsApi = {
     if (limit) params.append('limit', limit.toString());
     if (category) params.append('category', category);
 
-    const { data } = await marketplaceApi.get(
-      `/api/products/analytics/trending?${params.toString()}`
+    const { data } = await api.get(
+      `${MARKETPLACE_BASE_URL}/api/products/analytics/trending?${params.toString()}`
     );
     return data;
   },
 
   // Get category statistics
   getCategoryStats: async (): Promise<PaginatedResponse<CategoryStats>> => {
-    const { data} = await marketplaceApi.get(`/api/products/analytics/categories`);
+    const { data} = await api.get(`${MARKETPLACE_BASE_URL}/api/products/analytics/categories`);
     return data;
   },
 
@@ -185,7 +129,7 @@ export const analyticsApi = {
     const params = new URLSearchParams();
     if (limit) params.append('limit', limit.toString());
 
-    const { data } = await marketplaceApi.get(
+    const { data } = await api.get(
       `/api/products/${id}/similar?${params.toString()}`
     );
     return data;
@@ -197,8 +141,8 @@ export const analyticsApi = {
     params.append('query', query);
     if (limit) params.append('limit', limit.toString());
 
-    const { data } = await marketplaceApi.get(
-      `/api/products/search/suggestions?${params.toString()}`
+      const { data } = await api.get(
+      `${MARKETPLACE_BASE_URL}/api/products/search/suggestions?${params.toString()}`
     );
     return data;
   },
@@ -208,7 +152,7 @@ export const analyticsApi = {
 export const chatApi = {
   // Create or get chat for a product (auth required)
   createOrGet: async (productId: string): Promise<SingleResponse<Chat>> => {
-    const { data } = await marketplaceApi.post(`/api/chat/${productId}`);
+    const { data } = await api.post(`${MARKETPLACE_BASE_URL}/api/chat/${productId}`);
     return data;
   },
 
@@ -219,21 +163,21 @@ export const chatApi = {
     if (filters?.limit) params.append('limit', filters.limit.toString());
     if (filters?.status) params.append('status', filters.status);
 
-    const { data } = await marketplaceApi.get(
-      `/api/chat?${params.toString()}`
+    const { data } = await api.get(
+      `${MARKETPLACE_BASE_URL}/api/chat?${params.toString()}`
     );
     return data;
   },
 
   // Get chat statistics (auth required)
   getStats: async (): Promise<SingleResponse<ChatStats>> => {
-    const { data } = await marketplaceApi.get(`/api/chat/stats`);
+    const { data } = await api.get(`${MARKETPLACE_BASE_URL}/api/chat/stats`);
     return data;
   },
 
   // Get chat by ID (auth required)
   getById: async (chatId: string): Promise<SingleResponse<Chat>> => {
-    const { data } = await marketplaceApi.get(`/api/chat/${chatId}`);
+    const { data } = await api.get(`${MARKETPLACE_BASE_URL}/api/chat/${chatId}`);
     return data;
   },
 
@@ -243,7 +187,7 @@ export const chatApi = {
     if (filters?.page) params.append('page', filters.page.toString());
     if (filters?.limit) params.append('limit', filters.limit.toString());
 
-    const { data } = await marketplaceApi.get(
+    const { data } = await api.get(
       `/api/chat/${chatId}/messages?${params.toString()}`
     );
     return data;
@@ -251,8 +195,8 @@ export const chatApi = {
 
   // Send message (auth required)
   sendMessage: async (chatId: string, messageData: SendMessageData): Promise<SingleResponse<Message>> => {
-    const { data } = await marketplaceApi.post(
-      `/api/chat/${chatId}/messages`,
+    const { data } = await api.post(
+      `${MARKETPLACE_BASE_URL}/api/chat/${chatId}/messages`,
       messageData
     );
     return data;
@@ -260,7 +204,7 @@ export const chatApi = {
 
   // Mark messages as read (auth required)
   markAsRead: async (chatId: string, messageIds: string[]): Promise<SingleResponse<void>> => {
-    const { data } = await marketplaceApi.put(`/api/chat/${chatId}/read`, {
+    const { data } = await api.put(`${MARKETPLACE_BASE_URL}/api/chat/${chatId}/read`, {
       messageIds,
     });
     return data;
@@ -268,7 +212,7 @@ export const chatApi = {
 
   // Archive chat (auth required)
   archive: async (chatId: string): Promise<SingleResponse<void>> => {
-    const { data } = await marketplaceApi.delete(`/api/chat/${chatId}`);
+    const { data } = await api.delete(`${MARKETPLACE_BASE_URL}/api/chat/${chatId}`);
     return data;
   },
 };

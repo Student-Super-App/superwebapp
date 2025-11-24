@@ -4,24 +4,51 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { 
-  LayoutDashboard, 
-  ShoppingBag, 
-  Printer, 
-  Home, 
-  User, 
+import {
+  LayoutDashboard,
+  ShoppingBag,
+  Printer,
+  Home,
+  User,
   Settings,
   ChevronLeft,
   ChevronRight,
-  Sparkles
+  Sparkles,
+  DollarSign,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const navigation = [
-  { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, color: 'text-blue-600 dark:text-blue-400' },
-  { name: 'Marketplace', href: '/marketplace', icon: ShoppingBag, color: 'text-purple-600 dark:text-purple-400' },
-  { name: 'Printing', href: '/printing', icon: Printer, color: 'text-green-600 dark:text-green-400' },
-  { name: 'Rentplace', href: '/rentplace', icon: Home, color: 'text-orange-600 dark:text-orange-400' },
+  {
+    name: 'Dashboard',
+    href: '/dashboard',
+    icon: LayoutDashboard,
+    color: 'text-blue-600 dark:text-blue-400',
+  },
+  {
+    name: 'Marketplace',
+    href: '/marketplace',
+    icon: ShoppingBag,
+    color: 'text-purple-600 dark:text-purple-400',
+  },
+  {
+    name: 'SplitZone',
+    href: '/splitzone',
+    icon: DollarSign,
+    color: 'text-emerald-600 dark:text-emerald-400',
+  },
+  {
+    name: 'Printing',
+    href: '/printing',
+    icon: Printer,
+    color: 'text-green-600 dark:text-green-400',
+  },
+  {
+    name: 'Rentplace',
+    href: '/rentplace',
+    icon: Home,
+    color: 'text-orange-600 dark:text-orange-400',
+  },
 ];
 
 const secondaryNavigation = [
@@ -34,7 +61,7 @@ export const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <aside 
+    <aside
       className={cn(
         'hidden md:flex md:flex-col bg-gradient-to-b from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 flex-shrink-0 shadow-sm',
         collapsed ? 'w-16' : 'w-64'
@@ -64,11 +91,7 @@ export const Sidebar = () => {
             onClick={() => setCollapsed(!collapsed)}
             className="h-8 w-8 hover:bg-gray-200 dark:hover:bg-gray-700"
           >
-            {collapsed ? (
-              <ChevronRight className="h-4 w-4" />
-            ) : (
-              <ChevronLeft className="h-4 w-4" />
-            )}
+            {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
           </Button>
         </div>
 
@@ -81,7 +104,7 @@ export const Sidebar = () => {
               </p>
             </div>
           )}
-          
+
           {navigation.map((item) => {
             const isActive = pathname.startsWith(item.href);
             const Icon = item.icon;
@@ -98,14 +121,16 @@ export const Sidebar = () => {
                 )}
                 title={collapsed ? item.name : undefined}
               >
-                <Icon className={cn(
-                  'h-5 w-5 flex-shrink-0 transition-colors',
-                  isActive ? item.color : 'text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300',
-                  !collapsed && 'mr-3'
-                )} />
-                {!collapsed && (
-                  <span className="flex-1">{item.name}</span>
-                )}
+                <Icon
+                  className={cn(
+                    'h-5 w-5 flex-shrink-0 transition-colors',
+                    isActive
+                      ? item.color
+                      : 'text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300',
+                    !collapsed && 'mr-3'
+                  )}
+                />
+                {!collapsed && <span className="flex-1">{item.name}</span>}
                 {!collapsed && isActive && (
                   <div className="ml-auto">
                     <div className="h-2 w-2 rounded-full bg-gradient-to-r from-blue-500 to-purple-500"></div>
@@ -117,10 +142,12 @@ export const Sidebar = () => {
 
           {/* Divider */}
           <div className="py-3">
-            <div className={cn(
-              'border-t border-gray-200 dark:border-gray-700',
-              collapsed ? 'mx-2' : 'mx-3'
-            )}></div>
+            <div
+              className={cn(
+                'border-t border-gray-200 dark:border-gray-700',
+                collapsed ? 'mx-2' : 'mx-3'
+              )}
+            ></div>
           </div>
 
           {!collapsed && (
@@ -148,10 +175,12 @@ export const Sidebar = () => {
                 )}
                 title={collapsed ? item.name : undefined}
               >
-                <Icon className={cn(
-                  'h-5 w-5 flex-shrink-0 text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300',
-                  !collapsed && 'mr-3'
-                )} />
+                <Icon
+                  className={cn(
+                    'h-5 w-5 flex-shrink-0 text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300',
+                    !collapsed && 'mr-3'
+                  )}
+                />
                 {!collapsed && <span>{item.name}</span>}
               </Link>
             );

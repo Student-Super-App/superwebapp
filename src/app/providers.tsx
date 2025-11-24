@@ -8,6 +8,7 @@ import { SocketProvider } from '@/lib/socket';
 import { Toaster } from '@/components/ui/sonner';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { ThemeProvider } from '@/components/ThemeProvider';
+import { AuthGuard } from '@/components/AuthGuard';
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -16,7 +17,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
         <Provider store={store}>
           <QueryClientProvider client={queryClient}>
             <SocketProvider>
+              <AuthGuard>
+
               {children}
+              </AuthGuard>
               <Toaster position="top-right" richColors />
             </SocketProvider>
           </QueryClientProvider>

@@ -27,24 +27,24 @@ export const ProductFilters = ({ filters, onFiltersChange, onClear, className }:
 
   return (
     <Card className={cn('dark:bg-gray-800 dark:border-gray-700', className)}>
-      <CardHeader className="pb-3">
+      <CardHeader className="pb-2 pt-4 px-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <SlidersHorizontal className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-            <CardTitle className="text-lg dark:text-gray-100">Filters</CardTitle>
+            <SlidersHorizontal className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+            <CardTitle className="text-base dark:text-gray-100">Filters</CardTitle>
             {activeFiltersCount > 0 && (
-              <span className="px-2 py-0.5 text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-full">
+              <span className="px-1.5 py-0.5 text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-full">
                 {activeFiltersCount}
               </span>
             )}
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             {activeFiltersCount > 0 && (
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={onClear}
-                className="h-8 text-xs"
+                className="h-7 text-xs px-2"
               >
                 <X className="w-3 h-3 mr-1" />
                 Clear
@@ -54,7 +54,7 @@ export const ProductFilters = ({ filters, onFiltersChange, onClear, className }:
               variant="ghost"
               size="sm"
               onClick={() => setIsExpanded(!isExpanded)}
-              className="md:hidden h-8"
+              className="md:hidden h-7 px-2"
             >
               {isExpanded ? 'Hide' : 'Show'}
             </Button>
@@ -63,37 +63,37 @@ export const ProductFilters = ({ filters, onFiltersChange, onClear, className }:
       </CardHeader>
 
       <CardContent className={cn(
-        'space-y-4',
+        'space-y-3 px-4 pb-4',
         !isExpanded && 'hidden md:block'
       )}>
         {/* Search */}
-        <div className="space-y-2">
-          <Label htmlFor="search" className="text-sm font-medium dark:text-gray-200">
+        <div className="space-y-1.5">
+          <Label htmlFor="search" className="text-xs font-medium dark:text-gray-200">
             Search
           </Label>
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
             <Input
               id="search"
               type="text"
               placeholder="Search products..."
               value={filters.search || ''}
               onChange={(e) => handleChange('search', e.target.value)}
-              className="pl-9 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+              className="pl-8 h-9 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
             />
           </div>
         </div>
 
         {/* Category */}
-        <div className="space-y-2">
-          <Label htmlFor="category" className="text-sm font-medium dark:text-gray-200">
+        <div className="space-y-1.5">
+          <Label htmlFor="category" className="text-xs font-medium dark:text-gray-200">
             Category
           </Label>
           <select
             id="category"
             value={filters.category || ''}
             onChange={(e) => handleChange('category', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">All Categories</option>
             {PRODUCT_CATEGORIES.map((category) => (
@@ -105,15 +105,15 @@ export const ProductFilters = ({ filters, onFiltersChange, onClear, className }:
         </div>
 
         {/* Condition */}
-        <div className="space-y-2">
-          <Label htmlFor="condition" className="text-sm font-medium dark:text-gray-200">
+        <div className="space-y-1.5">
+          <Label htmlFor="condition" className="text-xs font-medium dark:text-gray-200">
             Condition
           </Label>
           <select
             id="condition"
             value={filters.condition || ''}
             onChange={(e) => handleChange('condition', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">All Conditions</option>
             {PRODUCT_CONDITIONS.map((condition) => (
@@ -125,8 +125,8 @@ export const ProductFilters = ({ filters, onFiltersChange, onClear, className }:
         </div>
 
         {/* Price Range */}
-        <div className="space-y-2">
-          <Label className="text-sm font-medium dark:text-gray-200">Price Range</Label>
+        <div className="space-y-1.5">
+          <Label className="text-xs font-medium dark:text-gray-200">Price Range</Label>
           <div className="grid grid-cols-2 gap-2">
             <div>
               <Input
@@ -135,7 +135,7 @@ export const ProductFilters = ({ filters, onFiltersChange, onClear, className }:
                 value={filters.minPrice || ''}
                 onChange={(e) => handleChange('minPrice', e.target.value ? Number(e.target.value) : undefined)}
                 min="0"
-                className="dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+                className="h-9 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
               />
             </div>
             <div>
@@ -145,22 +145,22 @@ export const ProductFilters = ({ filters, onFiltersChange, onClear, className }:
                 value={filters.maxPrice || ''}
                 onChange={(e) => handleChange('maxPrice', e.target.value ? Number(e.target.value) : undefined)}
                 min="0"
-                className="dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+                className="h-9 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
               />
             </div>
           </div>
         </div>
 
         {/* Sort By */}
-        <div className="space-y-2">
-          <Label htmlFor="sortBy" className="text-sm font-medium dark:text-gray-200">
+        <div className="space-y-1.5">
+          <Label htmlFor="sortBy" className="text-xs font-medium dark:text-gray-200">
             Sort By
           </Label>
           <select
             id="sortBy"
             value={filters.sortBy || 'createdAt'}
             onChange={(e) => handleChange('sortBy', e.target.value as 'price' | 'createdAt' | 'views')}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="createdAt">Newest First</option>
             <option value="price">Price</option>
@@ -170,15 +170,15 @@ export const ProductFilters = ({ filters, onFiltersChange, onClear, className }:
 
         {/* Sort Order */}
         {filters.sortBy && (
-          <div className="space-y-2">
-            <Label htmlFor="sortOrder" className="text-sm font-medium dark:text-gray-200">
+          <div className="space-y-1.5">
+            <Label htmlFor="sortOrder" className="text-xs font-medium dark:text-gray-200">
               Order
             </Label>
             <select
               id="sortOrder"
               value={filters.sortOrder || 'desc'}
               onChange={(e) => handleChange('sortOrder', e.target.value as 'asc' | 'desc')}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="desc">
                 {filters.sortBy === 'price' ? 'High to Low' : 'Descending'}

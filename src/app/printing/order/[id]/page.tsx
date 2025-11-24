@@ -1,7 +1,7 @@
 'use client';
 
 import { AuthGuard } from '@/components/AuthGuard';
-import { Header } from '@/components/common/Header';
+import { Header } from '@/components/common/Navbar';
 import { Sidebar } from '@/components/common/Sidebar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useParams } from 'next/navigation';

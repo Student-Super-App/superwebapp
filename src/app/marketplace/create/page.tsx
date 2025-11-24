@@ -1,8 +1,6 @@
 'use client';
 
 import { AuthGuard } from '@/components/AuthGuard';
-import { Header } from '@/components/common/Header';
-import { Sidebar } from '@/components/common/Sidebar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -94,21 +92,18 @@ export default function CreateProductPage() {
 
   return (
     <AuthGuard>
-      <div className="flex flex-col h-screen overflow-hidden">
-        <Header />
-        <div className="flex flex-1 overflow-hidden">
-          <Sidebar />
-          <main className="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-900">
-            <div className="max-w-3xl mx-auto p-4 sm:p-6 lg:p-8">
-              {/* Header */}
-              <div className="mb-6">
-                <Button
-                  variant="ghost"
-                  onClick={() => router.back()}
-                  className="mb-4 dark:hover:bg-gray-800"
-                >
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back
+      <div className="flex flex-col min-h-screen">
+        <main className="flex-1 bg-gray-50 dark:bg-gray-900">
+          <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            {/* Header */}
+            <div className="mb-6">
+              <Button
+                variant="ghost"
+                onClick={() => router.back()}
+                className="mb-4 dark:hover:bg-gray-800"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back
                 </Button>
                 <div className="flex items-center gap-3 mb-2">
                   <div className="p-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg">
@@ -285,8 +280,7 @@ export default function CreateProductPage() {
                 </form>
               </Card>
             </div>
-          </main>
-        </div>
+        </main>
       </div>
     </AuthGuard>
   );

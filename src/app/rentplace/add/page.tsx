@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { createPropertySchema, type CreatePropertyFormData } from '@/utils/validators';
 import { AuthGuard } from '@/components/AuthGuard';
-import { Header } from '@/components/common/Header';
+import { Header } from '@/components/common/Navbar';
 import { Sidebar } from '@/components/common/Sidebar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -171,11 +171,7 @@ export default function AddPropertyPage() {
                     <div className="grid grid-cols-3 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="city">City</Label>
-                        <Input
-                          id="city"
-                          placeholder="City"
-                          {...register('location.city')}
-                        />
+                        <Input id="city" placeholder="City" {...register('location.city')} />
                         {errors.location?.city && (
                           <p className="text-sm text-red-600">{errors.location.city.message}</p>
                         )}
@@ -183,11 +179,7 @@ export default function AddPropertyPage() {
 
                       <div className="space-y-2">
                         <Label htmlFor="state">State</Label>
-                        <Input
-                          id="state"
-                          placeholder="State"
-                          {...register('location.state')}
-                        />
+                        <Input id="state" placeholder="State" {...register('location.state')} />
                         {errors.location?.state && (
                           <p className="text-sm text-red-600">{errors.location.state.message}</p>
                         )}
@@ -211,8 +203,8 @@ export default function AddPropertyPage() {
                       <select
                         id="foodIncluded"
                         className="w-full px-3 py-2 border rounded-md"
-                        {...register('foodIncluded', { 
-                          setValueAs: (v) => v === 'true' 
+                        {...register('foodIncluded', {
+                          setValueAs: (v) => v === 'true',
                         })}
                       >
                         <option value="false">No</option>
@@ -224,11 +216,7 @@ export default function AddPropertyPage() {
                     </div>
 
                     <div className="flex gap-4">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => router.back()}
-                      >
+                      <Button type="button" variant="outline" onClick={() => router.back()}>
                         Cancel
                       </Button>
                       <Button type="submit" disabled={isLoading}>
