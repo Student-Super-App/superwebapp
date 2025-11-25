@@ -32,7 +32,7 @@ export default function EditGroupPage() {
   const groupId = params?.id as string;
 
   const { data, isLoading } = useGroup(groupId);
-  const updateGroup = useUpdateGroup(groupId);
+  const updateGroup = useUpdateGroup();
 
   const group = data?.data;
 
@@ -63,7 +63,7 @@ export default function EditGroupPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    updateGroup.mutate(formData);
+    updateGroup.mutate({ id: groupId, data: formData });
   };
 
   const getCategoryLabel = (category: string) => {

@@ -18,7 +18,7 @@ import { Plus, Filter, Receipt, Users, DollarSign, FileText } from 'lucide-react
 import { useExpenses, useExpenseStats } from '@/features/splitzone/hooks';
 import { useGroups } from '@/features/splitzone/hooks';
 import { formatCurrency, formatDate } from '@/lib/utils';
-import { EXPENSE_CATEGORIES, type ExpenseCategory } from '@/types/splitzone';
+import { EXPENSE_CATEGORIES, type ExpenseCategory, type ExpenseFilters } from '@/types/splitzone';
 import { UserAvatar } from '@/features/splitzone/components/UserAvatar';
 
 export default function ExpensesPage() {

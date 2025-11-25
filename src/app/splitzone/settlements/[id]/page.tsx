@@ -36,7 +36,7 @@ export default function SettlementDetailPage() {
 
   const handleReject = () => {
     if (confirm('Are you sure you want to reject this settlement?')) {
-      rejectSettlement.mutate(settlementId);
+      rejectSettlement.mutate({ id: settlementId, reason: 'Rejected by user' });
     }
   };
 
@@ -174,7 +174,7 @@ export default function SettlementDetailPage() {
             </div>
             <div>
               <p className="text-sm text-slate-500 dark:text-slate-400">Date</p>
-              <p className="font-medium">{formatDate(settlement.paymentDate)}</p>
+              <p className="font-medium">{formatDate(settlement.settlementDate)}</p>
             </div>
           </div>
 
@@ -190,10 +190,10 @@ export default function SettlementDetailPage() {
             </div>
           )}
 
-          {settlement.transactionId && (
+          {settlement.paymentDetails?.transactionId && (
             <div className="col-span-2">
               <p className="text-sm text-slate-500 dark:text-slate-400">Transaction ID</p>
-              <p className="font-mono text-sm">{settlement.transactionId}</p>
+              <p className="font-mono text-sm">{settlement.paymentDetails.transactionId}</p>
             </div>
           )}
         </div>
@@ -205,10 +205,10 @@ export default function SettlementDetailPage() {
           </div>
         )}
 
-        {settlement.proofUrl && (
+        {settlement.proof?.url && (
           <div className="pt-4 border-t">
             <Button variant="outline" asChild>
-              <a href={settlement.proofUrl} target="_blank" rel="noopener noreferrer">
+              <a href={settlement.proof.url} target="_blank" rel="noopener noreferrer">
                 <Download className="h-4 w-4 mr-2" />
                 View Proof of Payment
               </a>
@@ -217,12 +217,12 @@ export default function SettlementDetailPage() {
         )}
       </Card>
 
-      {settlement.groupId && (
+      {settlement.group && (
         <Card className="p-6">
           <h2 className="text-xl font-semibold mb-4">Group</h2>
-          <Link href={`/splitzone/groups/${settlement.groupId._id}`}>
+          <Link href={`/splitzone/groups/${settlement.group._id}`}>
             <Button variant="outline" className="w-full">
-              View {settlement.groupId.name}
+              View {settlement.group.name}
             </Button>
           </Link>
         </Card>

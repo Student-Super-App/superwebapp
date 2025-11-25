@@ -13,11 +13,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Plus, DollarSign, Clock, CheckCircle, XCircle, FileText } from 'lucide-react';
+import { Plus, Clock, CheckCircle, XCircle, FileText } from 'lucide-react';
 import { useSettlements, useGroups } from '@/features/splitzone/hooks';
 import { UserAvatar } from '@/features/splitzone/components/UserAvatar';
 import { formatCurrency, formatDate } from '@/lib/utils';
-import { type SettlementStatus } from '@/types/splitzone';
+import { type SettlementStatus, type SettlementFilters } from '@/types/splitzone';
 
 export default function SettlementsPage() {
   const [filters, setFilters] = useState({
@@ -25,7 +25,12 @@ export default function SettlementsPage() {
     status: '' as SettlementStatus | '',
   });
 
-  const { data: settlementsData, isLoading } = useSettlements(filters);
+  const apiFilters: SettlementFilters = {
+    groupId: filters.groupId || undefined,
+    status: filters.status || undefined,
+  };
+
+  const { data: settlementsData, isLoading } = useSettlements(apiFilters);
   const { data: groupsData } = useGroups();
 
   const settlements = settlementsData?.data || [];
@@ -225,17 +230,17 @@ export default function SettlementsPage() {
                         </div>
 
                         <div className="flex items-center gap-4 text-sm text-slate-500 dark:text-slate-400">
-                          <span>{formatDate(settlement.paymentDate)}</span>
+                          <span>{formatDate(settlement.settlementDate)}</span>
                           {settlement.paymentMethod && (
                             <>
                               <span>•</span>
                               <span>{getPaymentMethodLabel(settlement.paymentMethod)}</span>
                             </>
                           )}
-                          {settlement.groupId && (
+                          {settlement.group && (
                             <>
                               <span>•</span>
-                              <span>{settlement.groupId.name}</span>
+                              <span>{settlement.group.name}</span>
                             </>
                           )}
                         </div>

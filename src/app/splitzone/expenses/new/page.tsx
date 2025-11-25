@@ -65,6 +65,7 @@ export default function NewExpensePage() {
       description: formData.description,
       totalAmount: parseFloat(formData.totalAmount),
       category: formData.category,
+      currency: selectedGroupData?.currency || 'USD',
       paidBy: {
         userId: currentUser?.userId || '',
         userName: currentUser?.userName || '',

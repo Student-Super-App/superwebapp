@@ -66,8 +66,8 @@ export default function NewSettlementPage() {
       },
       amount: parseFloat(formData.amount),
       currency: selectedGroupData?.currency || 'USD',
-      paymentMethod: formData.paymentMethod || undefined,
-      paymentDate: formData.paymentDate,
+      paymentMethod: formData.paymentMethod as PaymentMethod,
+      settlementDate: formData.paymentDate,
       notes: formData.notes || undefined,
     };
 

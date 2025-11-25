@@ -29,15 +29,15 @@ export default function SettingsPage() {
   const user = data?.data;
 
   const [formData, setFormData] = useState<UpdateSettingsData>({
-    defaultCurrency: user?.settings.defaultCurrency || 'USD',
-    language: user?.settings.language || 'en',
+    defaultCurrency: (user?.settings.defaultCurrency || 'USD') as Currency,
+    language: (user?.settings.language || 'en') as Language,
     notifications: {
-      email: user?.settings.notifications.email ?? true,
-      push: user?.settings.notifications.push ?? true,
-      newExpense: user?.settings.notifications.newExpense ?? true,
-      paymentReceived: user?.settings.notifications.paymentReceived ?? true,
-      groupInvite: user?.settings.notifications.groupInvite ?? true,
-      expenseReminder: user?.settings.notifications.expenseReminder ?? true,
+      email: user?.settings.notifications?.email ?? true,
+      push: user?.settings.notifications?.push ?? true,
+      newExpense: user?.settings.notifications?.newExpense ?? true,
+      paymentReceived: user?.settings.notifications?.paymentReceived ?? true,
+      groupInvite: user?.settings.notifications?.groupInvite ?? true,
+      expenseReminder: user?.settings.notifications?.expenseReminder ?? true,
     },
   });
 
@@ -46,11 +46,11 @@ export default function SettingsPage() {
     updateSettings.mutate(formData);
   };
 
-  const toggleNotification = (key: keyof typeof formData.notifications) => {
+  const toggleNotification = (key: keyof NonNullable<UpdateSettingsData['notifications']>) => {
     setFormData({
       ...formData,
       notifications: {
-        ...formData.notifications,
+        ...formData.notifications!,
         [key]: !formData.notifications?.[key],
       },
     });

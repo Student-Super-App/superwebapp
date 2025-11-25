@@ -110,32 +110,18 @@ export default function SettlementSuggestPage() {
               <div className="flex items-center justify-between gap-6">
                 <div className="flex items-center gap-4 flex-1">
                   <div className="flex items-center gap-3">
-                    <UserAvatar
-                      name={suggestion.from.userName}
-                      email={suggestion.from.email}
-                      size="lg"
-                    />
+                    <UserAvatar name={suggestion.from.userName} size="lg" />
                     <div>
                       <p className="font-medium">{suggestion.from.userName}</p>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">
-                        {suggestion.from.email}
-                      </p>
                     </div>
                   </div>
 
                   <div className="text-3xl text-emerald-600 dark:text-emerald-400 px-4">→</div>
 
                   <div className="flex items-center gap-3">
-                    <UserAvatar
-                      name={suggestion.to.userName}
-                      email={suggestion.to.email}
-                      size="lg"
-                    />
+                    <UserAvatar name={suggestion.to.userName} size="lg" />
                     <div>
                       <p className="font-medium">{suggestion.to.userName}</p>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">
-                        {suggestion.to.email}
-                      </p>
                     </div>
                   </div>
                 </div>
@@ -153,23 +139,6 @@ export default function SettlementSuggestPage() {
                   </Link>
                 </div>
               </div>
-
-              {suggestion.relatedExpenses && suggestion.relatedExpenses.length > 0 && (
-                <div className="mt-4 pt-4 border-t">
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
-                    Related to {suggestion.relatedExpenses.length} expense(s)
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {suggestion.relatedExpenses.slice(0, 3).map((expenseId) => (
-                      <Link key={expenseId} href={`/splitzone/expenses/${expenseId}`}>
-                        <span className="text-xs px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
-                          View expense
-                        </span>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
             </Card>
           ))}
 
